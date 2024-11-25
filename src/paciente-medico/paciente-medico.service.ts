@@ -1,43 +1,56 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { PacienteEntity } from '../paciente/paciente.entity';
 import { MedicoEntity } from '../medico/medico.entity';
-import { BusinessError, BusinessLogicException } from '../shared/errors/business-errors';
+import { PacienteEntity } from '../paciente/paciente.entity';
+import {
+  BusinessError,
+  BusinessLogicException,
+} from '../shared/errors/business-errors';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class PacienteMedicoService {
   constructor(
     @InjectRepository(PacienteEntity)
     private readonly pacienteRepository: Repository<PacienteEntity>,
+
     @InjectRepository(MedicoEntity)
     private readonly medicoRepository: Repository<MedicoEntity>,
   ) {}
 
-  async addMedicoToPaciente(pacienteId: string, medicoId: string): Promise<PacienteEntity> {
-    // Verificar que el paciente existe
-    const paciente = await this.pacienteRepository.findOne({ where: { id: pacienteId }, relations: ['medico'] });
-    if (!paciente)
-      throw new BusinessLogicException('El paciente con el id proporcionado no existe.', BusinessError.NOT_FOUND);
-  
-    // Verificar que el médico existe
-    const medico = await this.medicoRepository.findOne({ where: { id: medicoId }, relations: ['pacientes'] });
-    if (!medico)
-      throw new BusinessLogicException('El médico con el id proporcionado no existe.', BusinessError.NOT_FOUND);
-  
-    // Validar que el médico no tenga más de 5 pacientes asignados
-    if (medico.pacientes && medico.pacientes.length >= 5)
+  async addMedicoToPaciente(
+    pacienteId: string,
+    medicoId: string,
+  ): Promise<PacienteEntity> {
+    const medico: MedicoEntity = await this.medicoRepository.findOne({
+      where: { id: medicoId },
+    });
+    if (!medico) {
       throw new BusinessLogicException(
-        'El médico no puede tener más de 5 pacientes asignados.',
+        'The medic with the given id was not found',
+        BusinessError.NOT_FOUND,
+      );
+    }
+
+    const paciente: PacienteEntity = await this.pacienteRepository.findOne({
+      where: { id: pacienteId },
+      relations: ['medicos', 'diagnosticos'],
+    });
+    if (!paciente) {
+      throw new BusinessLogicException(
+        'The patient with the given id was not found',
+        BusinessError.NOT_FOUND,
+      );
+    }
+
+    if (paciente.medicos.length >= 5) {
+      throw new BusinessLogicException(
+        'The patient already has 5 assigned medics',
         BusinessError.PRECONDITION_FAILED,
       );
-  
-    // Asignar el médico al paciente
-    paciente.medico = medico;
-  
-    // Guardar los cambios en la base de datos
+    }
+
+    paciente.medicos = [...paciente.medicos, medico];
     return await this.pacienteRepository.save(paciente);
   }
-  
-  
 }

@@ -1,24 +1,17 @@
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    ManyToMany,
-  } from "typeorm";
-  import { PacienteEntity } from "../paciente/paciente.entity";
-  
-  @Entity() 
-  export class DiagnosticoEntity {
+import { PacienteEntity } from '../paciente/paciente.entity';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
-  
-    @Column()
-    nombre: string;
-  
-    @Column()
-    descripcion: string;
-  
-    @ManyToMany(() => PacienteEntity, (paciente) => paciente.diagnosticos)
-    pacientes: PacienteEntity[];
-  }
-  
+@Entity('diagnostico')
+export class DiagnosticoEntity {
+  @Column()
+  nombre: string;
+
+  @Column()
+  descripcion: string;
+
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @ManyToMany(() => PacienteEntity, (paciente) => paciente.diagnosticos)
+  pacientes: PacienteEntity[];
+}

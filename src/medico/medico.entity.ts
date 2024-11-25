@@ -1,26 +1,20 @@
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    OneToMany,
-  } from "typeorm";
-  import { PacienteEntity } from "../paciente/paciente.entity";
-  
-  @Entity() 
-  export class MedicoEntity {
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
-  
-    @Column()
-    nombre: string;
-  
-    @Column()
-    especialidad: string;
-  
-    @Column()
-    telefono: string;
-  
-    @OneToMany(() => PacienteEntity, (paciente) => paciente.medico, { cascade: true })
-    pacientes: PacienteEntity[];
-  }
-  
+import { PacienteEntity } from '../paciente/paciente.entity';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+
+@Entity('medico')
+export class MedicoEntity {
+  @Column()
+  nombre: string;
+
+  @Column()
+  especialidad: string;
+
+  @Column()
+  telefono: string;
+
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @ManyToMany(() => PacienteEntity, (paciente) => paciente.medicos)
+  pacientes: PacienteEntity[];
+}
