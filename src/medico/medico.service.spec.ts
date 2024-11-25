@@ -44,11 +44,11 @@ describe('MedicoService', () => {
     }
   };
 
-  it('should be defined', () => {
+  it('El servicio debe estar definido', () => {
     expect(service).toBeDefined();
   });
 
-  it('create should return a new medic', async () => {
+  it('create debe retornar un nuevo medico', async () => {
     const medico: MedicoEntity = {
       id: '',
       nombre: faker.person.fullName(),
@@ -69,7 +69,7 @@ describe('MedicoService', () => {
     expect(storedMedico.telefono).toEqual(newMedico.telefono);
   });
 
-  it('create should throw an exception for an invalid medic name', async () => {
+  it('create debe lanzar una excepcion si el nombre del medico es invalido', async () => {
     const medico: MedicoEntity = {
       id: '',
       nombre: '',
@@ -80,11 +80,11 @@ describe('MedicoService', () => {
 
     await expect(() => service.create(medico)).rejects.toHaveProperty(
       'message',
-      'The medic name cannot be empty',
+      'El nombre del medico no puede estar vacio.',
     );
   });
 
-  it('create should throw an exception for an invalid doctor speciality', async () => {
+  it('create debe lanzar una excepcion si la especialidad del medico es invalida', async () => {
     const medico: MedicoEntity = {
       id: '',
       nombre: faker.person.fullName(),
@@ -94,11 +94,11 @@ describe('MedicoService', () => {
     };
     await expect(() => service.create(medico)).rejects.toHaveProperty(
       'message',
-      'The medic specialty cannot be empty',
+      'La especialidad del medico no puede estar vacia.',
     );
   });
 
-  it('findOne should return a medic by id', async () => {
+  it('findOne debe retornar un medico por id', async () => {
     const storedMedico: MedicoEntity = medicosList[0];
     const medico: MedicoEntity = await service.findOne(storedMedico.id);
     expect(medico).not.toBeNull();
@@ -107,20 +107,20 @@ describe('MedicoService', () => {
     expect(medico.telefono).toEqual(storedMedico.telefono);
   });
 
-  it('findOne should throw an exception for an invalid medic', async () => {
+  it('findOne debe lanzar una excepcion si el medico no existe', async () => {
     await expect(() => service.findOne('0')).rejects.toHaveProperty(
       'message',
-      'The medic with the given id was not found',
+      'El medico con el id proporcionado no fue encontrado.',
     );
   });
 
-  it('findAll should return all medics', async () => {
+  it('findAll debe retornar todos los medicos', async () => {
     const medicos: MedicoEntity[] = await service.findAll();
     expect(medicos).not.toBeNull();
     expect(medicos).toHaveLength(medicosList.length);
   });
 
-  it('delete should remove a medic', async () => {
+  it('delete debe eliminar un medico', async () => {
     const medico: MedicoEntity = medicosList[0];
     await service.delete(medico.id);
 
@@ -130,14 +130,14 @@ describe('MedicoService', () => {
     expect(deletedMedico).toBeNull();
   });
 
-  it('delete should throw an exception for an invalid medic', async () => {
+  it('delete debe lanzar una excepcion si el medico no existe', async () => {
     await expect(() => service.delete('0')).rejects.toHaveProperty(
       'message',
-      'The medic with the given id was not found',
+      'El medico con el id proporcionado no fue encontrado.',
     );
   });
 
-  it('delete should throw an exception if the medic has one or more patients', async () => {
+  it('delete debe lanzar una excepcion si el medico tiene pacientes', async () => {
     const paciente: PacienteEntity = await pacienteRepository.save({
       nombre: faker.person.fullName(),
       genero: faker.person.gender(),
@@ -152,7 +152,7 @@ describe('MedicoService', () => {
 
     await expect(() => service.delete(medico.id)).rejects.toHaveProperty(
       'message',
-      'The medic has one or more patients, deletion is not allowed.',
+      'El medico tiene uno o mas pacientes, la eliminacion no esta permitida.',
     );
   });
 });

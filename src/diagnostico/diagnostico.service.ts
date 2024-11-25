@@ -14,41 +14,49 @@ export class DiagnosticoService {
     private readonly diagnosticoRepository: Repository<DiagnosticoEntity>,
   ) {}
 
+  // Crear un diagnostico
   async create(diagnostico: DiagnosticoEntity): Promise<DiagnosticoEntity> {
-    if (diagnostico.descripcion.length > 200)
+    if (diagnostico.descripcion.length > 200) {
       throw new BusinessLogicException(
-        'The diagnosis description is longer than 200 characters.',
+        'La descripcion del diagnostico es mayor a 200 caracteres.',
         BusinessError.PRECONDITION_FAILED,
       );
+    }
     return await this.diagnosticoRepository.save(diagnostico);
   }
 
+  // Obtener todos los diagnosticos
   async findAll(): Promise<DiagnosticoEntity[]> {
     return await this.diagnosticoRepository.find({ relations: ['pacientes'] });
   }
+
+  // Obtener un diagnostico por id
   async findOne(id: string): Promise<DiagnosticoEntity> {
     const diagnostico: DiagnosticoEntity =
       await this.diagnosticoRepository.findOne({
         where: { id },
         relations: ['pacientes'],
       });
-    if (!diagnostico)
+    if (!diagnostico) {
       throw new BusinessLogicException(
-        'The diagnosis with the given id was not found',
+        'El diagnostico con el id proporcionado no fue encontrado.',
         BusinessError.NOT_FOUND,
       );
+    }
 
     return diagnostico;
   }
 
-  async delete(id: string) {
+  // Eliminar un diagnostico
+  async delete(id: string): Promise<void> {
     const diagnostico: DiagnosticoEntity =
       await this.diagnosticoRepository.findOne({ where: { id } });
-    if (!diagnostico)
+    if (!diagnostico) {
       throw new BusinessLogicException(
-        'The diagnosis with the given id was not found',
+        'El diagnostico con el id proporcionado no fue encontrado.',
         BusinessError.NOT_FOUND,
       );
+    }
 
     await this.diagnosticoRepository.remove(diagnostico);
   }

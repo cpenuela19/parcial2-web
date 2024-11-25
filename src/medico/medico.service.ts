@@ -12,56 +12,66 @@ export class MedicoService {
     private readonly medicoRepository: Repository<MedicoEntity>,
   ) {}
 
+  // Crear un medico
   async create(medico: MedicoEntity): Promise<MedicoEntity> {
-    if (medico.nombre.length === 0)
+    if (medico.nombre.length === 0) {
       throw new BusinessLogicException(
-        'The medic name cannot be empty',
+        'El nombre del medico no puede estar vacio.',
         BusinessError.PRECONDITION_FAILED,
       );
-    if (medico.especialidad.length === 0)
+    }
+    if (medico.especialidad.length === 0) {
       throw new BusinessLogicException(
-        'The medic specialty cannot be empty',
+        'La especialidad del medico no puede estar vacia.',
         BusinessError.PRECONDITION_FAILED,
       );
+    }
     return await this.medicoRepository.save(medico);
   }
 
+  // Obtener todos los medicos
   async findAll(): Promise<MedicoEntity[]> {
     return await this.medicoRepository.find({
       relations: ['pacientes'],
     });
   }
 
+  // Obtener un medico por ID
   async findOne(id: string): Promise<MedicoEntity> {
     const medico: MedicoEntity = await this.medicoRepository.findOne({
       where: { id },
       relations: ['pacientes'],
     });
-    if (!medico)
+    if (!medico) {
       throw new BusinessLogicException(
-        'The medic with the given id was not found',
+        'El medico con el id proporcionado no fue encontrado.',
         BusinessError.NOT_FOUND,
       );
+    }
 
     return medico;
   }
 
-  async delete(id: string) {
+  // Eliminar un medico
+  async delete(id: string): Promise<void> {
     const medico: MedicoEntity = await this.medicoRepository.findOne({
       where: { id },
       relations: ['pacientes'],
     });
-    if (!medico)
+    if (!medico) {
       throw new BusinessLogicException(
-        'The medic with the given id was not found',
+        'El medico con el id proporcionado no fue encontrado.',
         BusinessError.NOT_FOUND,
       );
+    }
 
-    if (medico.pacientes.length >= 1)
+    if (medico.pacientes.length >= 1) {
       throw new BusinessLogicException(
-        'The medic has one or more patients, deletion is not allowed.',
+        'El medico tiene uno o mas pacientes, la eliminacion no esta permitida.',
         BusinessError.PRECONDITION_FAILED,
       );
+    }
+
     await this.medicoRepository.remove(medico);
   }
 }

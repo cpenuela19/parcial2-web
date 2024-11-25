@@ -37,11 +37,11 @@ describe('DiagnosticoService', () => {
     }
   };
 
-  it('should be defined', () => {
+  it('El servicio DiagnosticoService debe estar definido', () => {
     expect(service).toBeDefined();
   });
 
-  it('create should return a new diagnosis', async () => {
+  it('create debe retornar un nuevo diagnostico', async () => {
     const diagnostico: DiagnosticoEntity = {
       id: '',
       nombre: faker.company.name(),
@@ -60,7 +60,7 @@ describe('DiagnosticoService', () => {
     expect(storedDiagnostico.descripcion).toEqual(newDiagnostico.descripcion);
   });
 
-  it('create should throw an exception for an invalid diagnosis description', async () => {
+  it('create debe lanzar una excepcion si la descripcion del diagnostico es invalida', async () => {
     const diagnostico: DiagnosticoEntity = {
       id: '',
       nombre: faker.company.name(),
@@ -70,11 +70,11 @@ describe('DiagnosticoService', () => {
 
     await expect(() => service.create(diagnostico)).rejects.toHaveProperty(
       'message',
-      'The diagnosis description is longer than 200 characters.',
+      'La descripcion del diagnostico es mayor a 200 caracteres.',
     );
   });
 
-  it('findOne should return a diagnosis by id', async () => {
+  it('findOne debe retornar un diagnostico por id', async () => {
     const storedDiagnostico: DiagnosticoEntity = diagnosticosList[0];
     const diagnostico: DiagnosticoEntity = await service.findOne(
       storedDiagnostico.id,
@@ -84,20 +84,20 @@ describe('DiagnosticoService', () => {
     expect(diagnostico.descripcion).toEqual(storedDiagnostico.descripcion);
   });
 
-  it('findOne should throw an exception for an invalid diagnosis', async () => {
+  it('findOne debe lanzar una excepcion para un diagnostico invalido', async () => {
     await expect(() => service.findOne('0')).rejects.toHaveProperty(
       'message',
-      'The diagnosis with the given id was not found',
+      'El diagnostico con el id proporcionado no fue encontrado.',
     );
   });
 
-  it('findAll should return all diagnosis', async () => {
+  it('findAll debe retornar todos los diagnosticos', async () => {
     const diagnosticos: DiagnosticoEntity[] = await service.findAll();
     expect(diagnosticos).not.toBeNull();
     expect(diagnosticos).toHaveLength(diagnosticosList.length);
   });
 
-  it('delete should remove a diagnosis', async () => {
+  it('delete debe eliminar un diagnostico', async () => {
     const diagnostico: DiagnosticoEntity = diagnosticosList[0];
     await service.delete(diagnostico.id);
     const deletedDiagnostico: DiagnosticoEntity = await repository.findOne({
@@ -106,10 +106,10 @@ describe('DiagnosticoService', () => {
     expect(deletedDiagnostico).toBeNull();
   });
 
-  it('delete should throw an exception for an invalid diagnosis', async () => {
+  it('delete debe lanzar una excepcion para un diagnostico invalido', async () => {
     await expect(() => service.delete('0')).rejects.toHaveProperty(
       'message',
-      'The diagnosis with the given id was not found',
+      'El diagnostico con el id proporcionado no fue encontrado.',
     );
   });
 });

@@ -18,6 +18,7 @@ export class PacienteMedicoService {
     private readonly medicoRepository: Repository<MedicoEntity>,
   ) {}
 
+  // Asociar un medico a un paciente
   async addMedicoToPaciente(
     pacienteId: string,
     medicoId: string,
@@ -27,7 +28,7 @@ export class PacienteMedicoService {
     });
     if (!medico) {
       throw new BusinessLogicException(
-        'The medic with the given id was not found',
+        'El medico con el id proporcionado no fue encontrado.',
         BusinessError.NOT_FOUND,
       );
     }
@@ -38,14 +39,14 @@ export class PacienteMedicoService {
     });
     if (!paciente) {
       throw new BusinessLogicException(
-        'The patient with the given id was not found',
+        'El paciente con el id proporcionado no fue encontrado.',
         BusinessError.NOT_FOUND,
       );
     }
 
     if (paciente.medicos.length >= 5) {
       throw new BusinessLogicException(
-        'The patient already has 5 assigned medics',
+        'El paciente ya tiene asignados 5 medicos.',
         BusinessError.PRECONDITION_FAILED,
       );
     }

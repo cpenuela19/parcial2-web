@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { MedicoEntity } from '../medico/medico.entity';
 import { PacienteEntity } from '../paciente/paciente.entity';
 import { TypeOrmTestingConfig } from '../shared/testing-utils/typeorm-testing-config';
-import { faker } from '@faker-js/faker/.';
+import { faker } from '@faker-js/faker';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
 describe('PacienteMedicoService', () => {
@@ -51,11 +51,11 @@ describe('PacienteMedicoService', () => {
     });
   };
 
-  it('should be defined', () => {
+  it('El servicio debe estar definido', () => {
     expect(service).toBeDefined();
   });
 
-  it('addMedicoToPaciente should add a medic to a patient', async () => {
+  it('addMedicoToPaciente debe agregar un medico a un paciente', async () => {
     const newMedico: MedicoEntity = await medicoRepository.save({
       nombre: faker.person.fullName(),
       especialidad: faker.person.jobTitle(),
@@ -79,7 +79,7 @@ describe('PacienteMedicoService', () => {
     expect(result.medicos[0].telefono).toBe(newMedico.telefono);
   });
 
-  it('addMedicoToPaciente should thrown exception for an invalid medic', async () => {
+  it('addMedicoToPaciente debe lanzar una excepcion para un medico invalido', async () => {
     const newPaciente: PacienteEntity = await pacienteRepository.save({
       nombre: faker.person.fullName(),
       genero: faker.person.gender(),
@@ -89,11 +89,11 @@ describe('PacienteMedicoService', () => {
       service.addMedicoToPaciente(newPaciente.id, '0'),
     ).rejects.toHaveProperty(
       'message',
-      'The medic with the given id was not found',
+      'El medico con el id proporcionado no fue encontrado.',
     );
   });
 
-  it('addMedicoToPaciente should throw an exception for an invalid patient', async () => {
+  it('addMedicoToPaciente debe lanzar una excepcion para un paciente invalido', async () => {
     const newMedico: MedicoEntity = await medicoRepository.save({
       nombre: faker.person.fullName(),
       especialidad: faker.person.jobTitle(),
@@ -104,11 +104,11 @@ describe('PacienteMedicoService', () => {
       service.addMedicoToPaciente('0', newMedico.id),
     ).rejects.toHaveProperty(
       'message',
-      'The patient with the given id was not found',
+      'El paciente con el id proporcionado no fue encontrado.',
     );
   });
 
-  it('addMedicoToPaciente should throw an exception when a patient already has 5 assigned doctors', async () => {
+  it('addMedicoToPaciente debe lanzar una excepcion si el paciente ya tiene 5 medicos asignados', async () => {
     const newMedico: MedicoEntity = await medicoRepository.save({
       nombre: faker.person.fullName(),
       especialidad: faker.person.jobTitle(),
@@ -119,7 +119,7 @@ describe('PacienteMedicoService', () => {
       service.addMedicoToPaciente(paciente.id, newMedico.id),
     ).rejects.toHaveProperty(
       'message',
-      'The patient already has 5 assigned medics',
+      'El paciente ya tiene asignados 5 medicos.',
     );
   });
 });
